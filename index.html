@@ -1,24 +1,234 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<style>
-h1 {text-align: center;}
-p {text-align: center;}
-div {text-align: center;}
-a {text-align: center;}
-</style>
-</head>
-<body style="background-color:#000000;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>eti</title>
+    <style>
+        /* Body setup */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000; /* Dark background */
+            overflow: hidden;  /* Prevent scrolling */
+            color: white;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            position: fixed; /* Fix the body to the screen */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
 
-<h1 style="color:gray;">etirium.com</h1>
-<p style="color:gray;">we stakin</p>
-<div style="color:gray;">info@etirium.com</div>
-  
-<div style="text-align:center; color:gray;">    
-  <a href="https://www.etirium.com/">etirium</a>
-  <!-- more links -->
-</div>
- 
-  
+        /* Prevent scrolling on mobile */
+        html, body {
+            touch-action: none;  /* Disable touch events */
+            overflow: hidden; /* Prevent scroll on mobile */
+        }
+
+        /* Ensure the title uses Helvetica */
+        .foreground h1, .foreground p, .foreground div, .foreground a {
+            font-family: 'Helvetica', 'Arial', sans-serif; 
+            margin: 0;
+        }
+
+        /* ASCII background container */
+        .ascii-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 10px); 
+            pointer-events: none;
+            user-select: none;
+            color: grey;
+        }
+
+        /* Style for each individual ASCII character */
+        .ascii-container span {
+            opacity: 0.6;
+            font-size: 12px;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Active effect on hover or random light-up */
+        .ascii-container span.active {
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); /* Stronger glow */
+            opacity: 0; 
+        }
+
+        /* Ripple animation style */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.4);
+            pointer-events: none;
+            animation: ripple-effect 1.5s linear forwards;
+        }
+
+        /* Ripple effect animation */
+        @keyframes ripple-effect {
+            0% {
+                transform: scale(1);
+                opacity: 0.1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(3);
+                opacity: 0;
+            }
+        }
+
+        /* Foreground text styling */
+        .foreground {
+            z-index: 10;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        /* Title styling */
+        .foreground h1 {
+            font-size: 4rem;
+            margin: 0;
+            font-weight: 300;
+            color: gray; /* Title color */
+        }
+
+        /* Subtitle styling */
+        .foreground p, .foreground div {
+            font-size: 1.2rem;
+            margin: 5px 0;
+            font-weight: 300;
+            color: gray; /* Subtitle and contact info color */
+        }
+
+        /* Links styling */
+        .foreground a {
+            font-size: 1.2rem;
+            color: gray;
+            text-decoration: none;
+            border: 1px solid gray;
+            padding: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .foreground a:hover {
+            color: white;
+            border-color: white;
+        }
+
+        /* Additional visual styling for links */
+        .foreground a:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ASCII background container -->
+    <div class="ascii-container" id="asciiContainer"></div>
+
+    <!-- Foreground with title, subtitle, and links -->
+    <div class="foreground">
+        <h1></h1>
+        <div>info@etirium.com</div>
+        <div>
+            <a href="https://www.etirium.com/" target="_blank">enter</a>
+            <!-- More links can be added here -->
+        </div>
+    </div>
+
+    <script>
+        // Fill the container with ASCII characters
+        const container = document.getElementById('asciiContainer');
+        const characters = '0x8b37319327e01e9312abfede292728fb35d0017ee84e59af9fef51afe882a0c430754528372472c86653c41c4aac972509d3030c24face0e3eac9399774e50cc3d231aaf7b16';
+
+        for (let i = 0; i < 8000; i++) {
+            const char = document.createElement('span');
+            char.textContent = characters.charAt(Math.floor(Math.random() * characters.length));
+            container.appendChild(char);
+        }
+
+        // Function to handle effects on both hover and click
+        function triggerEffect(e) {
+            const x = e.clientX;
+            const y = e.clientY;
+
+            // Find the closest element to the cursor
+            const element = document.elementFromPoint(x, y);
+            if (element && element.tagName === 'SPAN') {
+                // Add the 'active' class when hovered or clicked
+                element.classList.add('active');
+                
+                // Remove the 'active' class after a brief period to allow the effect to fade
+                setTimeout(() => element.classList.remove('active'), 300);
+
+                // Create a ripple effect at the click location
+                if (e.type === 'click') {
+                    const ripple = document.createElement('div');
+                    ripple.style.position = 'absolute';
+                    ripple.style.width = '10px';
+                    ripple.style.height = '10px';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+                    ripple.style.pointerEvents = 'none';
+                    ripple.classList.add('ripple');
+                    document.body.appendChild(ripple);
+
+                    // Remove the ripple element once the animation is done
+                    ripple.addEventListener('animationend', () => {
+                        ripple.remove();
+                    });
+                }
+            }
+        }
+
+        // Attach both mousemove and click listeners
+        document.addEventListener('mousemove', triggerEffect);
+        document.addEventListener('click', triggerEffect);
+
+        // Random letters becoming white like a starry night with increased frequency
+        function randomLightUp() {
+            const asciiSpans = document.querySelectorAll('.ascii-container span');
+            
+            // Select a random span from the collection
+            const randomIndex = Math.floor(Math.random() * asciiSpans.length);
+            const span = asciiSpans[randomIndex];
+
+            // Ensure the span element is valid
+            if (span) {
+                // Make the randomly chosen letter light up
+                span.classList.add('active');
+                
+                // Remove the 'active' class after 4 seconds
+                setTimeout(() => {
+                    span.classList.remove('active');
+                }, 4000);
+            }
+        }
+
+        // Trigger random light-up every 0.8 seconds (increased frequency)
+        setInterval(randomLightUp, 200); // Faster light-up interval
+    </script>
+
 </body>
 </html>
-
