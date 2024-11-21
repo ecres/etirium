@@ -39,7 +39,8 @@
             width: 100%;
             height: 100%;
             display: grid;
-            grid-template-columns: repeat(auto-fill, 10px); 
+            grid-template-columns: repeat(auto-fill, minmax(10px, 1fr)); /* Dynamic column size */
+            grid-template-rows: repeat(auto-fill, minmax(12px, 1fr)); /* Dynamic row size */
             user-select: none;
             color: grey; /* Default gray color */
         }
@@ -132,11 +133,34 @@
         const container = document.getElementById('asciiContainer');
         const characters = '0x8b37319327e01e9312abfede292728fb35d0017ee84e59af9fef51afe882a0c430754528372472c86653c41c4aac972509d3030c24face0e3eac9399774e50cc3d231aaf7b16';
 
-        for (let i = 0; i < 3000; i++) {
-            const char = document.createElement('span');
-            char.textContent = characters.charAt(Math.floor(Math.random() * characters.length));
-            container.appendChild(char);
+        // Adjust grid based on window size to ensure full screen coverage
+        const updateGridSize = () => {
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            
+            const columns = Math.floor(containerWidth / 10); // 10px per column
+            const rows = Math.floor(containerHeight / 12); // 12px per row
+
+            const totalCharacters = columns * rows;
+            container.innerHTML = ''; // Clear container
+
+            // Add ASCII characters dynamically
+            for (let i = 0; i < totalCharacters; i++) {
+                const char = document.createElement('span');
+                char.textContent = characters.charAt(Math.floor(Math.random() * characters.length));
+                container.appendChild(char);
+            }
+
+            // Adjust the grid layout based on the new column/row count
+            container.style.gridTemplateColumns = `repeat(${columns}, 10px)`;
+            container.style.gridTemplateRows = `repeat(${rows}, 12px)`;
         }
+
+        // Initially set the grid size
+        updateGridSize();
+
+        // Adjust grid size on window resize
+        window.addEventListener('resize', updateGridSize);
 
         // Function to handle hover effect (turns black)
         function handleHover(e) {
