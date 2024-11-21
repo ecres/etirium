@@ -31,12 +31,6 @@
             overflow: hidden; /* Prevent scroll on mobile */
         }
 
-        /* Ensure the title uses Helvetica */
-        .foreground h1, .foreground p, .foreground div, .foreground a {
-            font-family: 'Helvetica', 'Arial', sans-serif; 
-            margin: 0;
-        }
-
         /* ASCII background container */
         .ascii-container {
             position: absolute;
@@ -46,9 +40,8 @@
             height: 100%;
             display: grid;
             grid-template-columns: repeat(auto-fill, 10px); 
-            pointer-events: none;
             user-select: none;
-            color: grey;
+            color: grey; /* Default gray color */
         }
 
         /* Style for each individual ASCII character */
@@ -58,42 +51,26 @@
             display: inline-block;
             text-align: center;
             transition: all 0.3s ease;
-            pointer-events: auto;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+            color: grey; /* Default color is grey */
         }
 
-        /* Active effect on hover or random light-up */
-        .ascii-container span.active {
-            color: white;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); /* Stronger glow */
-            opacity: 0; 
+        /* Active effect for random light-up (turns black or white) */
+        .ascii-container span.random-active {
+            color: black; /* Some random characters turn black */
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.8); /* Glow effect for black */
+            opacity: 1; 
         }
 
-        /* Ripple animation style */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.4);
-            pointer-events: none;
-            animation: ripple-effect 1.5s linear forwards;
+        .ascii-container span.random-active-white {
+            color: white; /* Some random characters turn white */
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); /* Glow effect for white */
+            opacity: 1; 
         }
 
-        /* Ripple effect animation */
-        @keyframes ripple-effect {
-            0% {
-                transform: scale(1);
-                opacity: 0.1;
-            }
-            50% {
-                transform: scale(1.5);
-                opacity: 0.4;
-            }
-            100% {
-                transform: scale(3);
-                opacity: 0;
-            }
+        /* Active effect on hover (turns black) */
+        .ascii-container span.hover-active {
+            color: black; /* Hover turns black */
+            opacity: 1; 
         }
 
         /* Foreground text styling */
@@ -133,11 +110,6 @@
             color: white;
             border-color: white;
         }
-
-        /* Additional visual styling for links */
-        .foreground a:active {
-            transform: scale(0.95);
-        }
     </style>
 </head>
 <body>
@@ -166,68 +138,46 @@
             container.appendChild(char);
         }
 
-        // Function to handle effects on both hover and click
-        function triggerEffect(e) {
-            const x = e.clientX;
-            const y = e.clientY;
-
-            // Find the closest element to the cursor
-            const element = document.elementFromPoint(x, y);
-            if (element && element.tagName === 'SPAN') {
-                // Add the 'active' class when hovered or clicked
-                element.classList.add('active');
-                
-                // Remove the 'active' class after a brief period to allow the effect to fade
-                setTimeout(() => element.classList.remove('active'), 300);
-
-                // Create a ripple effect at the click location
-                if (e.type === 'click') {
-                    const ripple = document.createElement('div');
-                    ripple.style.position = 'absolute';
-                    ripple.style.width = '10px';
-                    ripple.style.height = '10px';
-                    ripple.style.borderRadius = '50%';
-                    ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-                    ripple.style.left = `${x}px`;
-                    ripple.style.top = `${y}px`;
-                    ripple.style.pointerEvents = 'none';
-                    ripple.classList.add('ripple');
-                    document.body.appendChild(ripple);
-
-                    // Remove the ripple element once the animation is done
-                    ripple.addEventListener('animationend', () => {
-                        ripple.remove();
-                    });
-                }
+        // Function to handle hover effect (turns black)
+        function handleHover(e) {
+            const target = e.target;
+            if (target.tagName === 'SPAN') {
+                target.classList.add('hover-active'); // Add hover-active class to turn it black
+                setTimeout(() => {
+                    target.classList.remove('hover-active'); // Remove after short delay
+                }, 300);
             }
         }
 
-        // Attach both mousemove and click listeners
-        document.addEventListener('mousemove', triggerEffect);
-        document.addEventListener('click', triggerEffect);
+        // Attach hover listeners directly to the ASCII characters (span elements)
+        const asciiSpans = container.querySelectorAll('span');
+        asciiSpans.forEach(span => {
+            span.addEventListener('mouseenter', handleHover); // Trigger on hover
+        });
 
-        // Random letters becoming white like a starry night with increased frequency
+        // Random letters becoming black or white like a starry night
         function randomLightUp() {
             const asciiSpans = document.querySelectorAll('.ascii-container span');
-            
-            // Select a random span from the collection
             const randomIndex = Math.floor(Math.random() * asciiSpans.length);
             const span = asciiSpans[randomIndex];
 
-            // Ensure the span element is valid
             if (span) {
-                // Make the randomly chosen letter light up
-                span.classList.add('active');
-                
-                // Remove the 'active' class after 4 seconds
+                // Randomly decide whether to make the character black or white
+                if (Math.random() > 0.5) {
+                    span.classList.add('random-active'); // Turn it black
+                } else {
+                    span.classList.add('random-active-white'); // Turn it white
+                }
+
                 setTimeout(() => {
-                    span.classList.remove('active');
-                }, 4000);
+                    span.classList.remove('random-active');
+                    span.classList.remove('random-active-white');
+                }, 4000); // Remove after 4 seconds
             }
         }
 
-        // Trigger random light-up every 0.8 seconds (increased frequency)
-        setInterval(randomLightUp, 200); // Faster light-up interval
+        // Trigger random light-up every 1 second (reduced frequency for performance)
+        setInterval(randomLightUp, 600); // Slower light-up interval for less load
     </script>
 
 </body>
