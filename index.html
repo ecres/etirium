@@ -120,9 +120,9 @@
     <!-- Foreground with title, subtitle, and links -->
     <div class="foreground">
         <h1></h1>
-        <div>info@etirium.com</div>
+        <div></div>
         <div>
-            <a href="https://www.etirium.com/" target="_blank">enter</a>
+            <a href="info@etirium.com" target="_blank">enter</a>
             <!-- More links can be added here -->
         </div>
     </div>
@@ -132,7 +132,7 @@
         const container = document.getElementById('asciiContainer');
         const characters = '0x8b37319327e01e9312abfede292728fb35d0017ee84e59af9fef51afe882a0c430754528372472c86653c41c4aac972509d3030c24face0e3eac9399774e50cc3d231aaf7b16';
 
-        for (let i = 0; i < 8000; i++) {
+        for (let i = 0; i < 2000; i++) {
             const char = document.createElement('span');
             char.textContent = characters.charAt(Math.floor(Math.random() * characters.length));
             container.appendChild(char);
@@ -145,7 +145,7 @@
                 target.classList.add('hover-active'); // Add hover-active class to turn it black
                 setTimeout(() => {
                     target.classList.remove('hover-active'); // Remove after short delay
-                }, 300);
+                }, 3000);
             }
         }
 
@@ -172,7 +172,7 @@
                 setTimeout(() => {
                     span.classList.remove('random-active');
                     span.classList.remove('random-active-white');
-                }, 4000); // Remove after 4 seconds
+                }, 400); // Remove after 4 seconds
             }
         }
 
