@@ -138,8 +138,8 @@
             const containerWidth = container.offsetWidth;
             const containerHeight = container.offsetHeight;
             
-            const columns = Math.floor(containerWidth / 10); // 10px per column
-            const rows = Math.floor(containerHeight / 12); // 12px per row
+            const columns = Math.floor(containerWidth / 13); // 10px per column
+            const rows = Math.floor(containerHeight / 15); // 12px per row
 
             const totalCharacters = columns * rows;
             container.innerHTML = ''; // Clear container
@@ -152,8 +152,8 @@
             }
 
             // Adjust the grid layout based on the new column/row count
-            container.style.gridTemplateColumns = `repeat(${columns}, 10px)`;
-            container.style.gridTemplateRows = `repeat(${rows}, 12px)`;
+            container.style.gridTemplateColumns = `repeat(${columns}, 13px)`;
+            container.style.gridTemplateRows = `repeat(${rows}, 15px)`;
         }
 
         // Initially set the grid size
@@ -196,12 +196,12 @@
                 setTimeout(() => {
                     span.classList.remove('random-active');
                     span.classList.remove('random-active-white');
-                }, 400); // Remove after 4 seconds
+                }, 3000); // Remove after 4 seconds
             }
         }
 
         // Trigger random light-up every 1 second (reduced frequency for performance)
-        setInterval(randomLightUp, 600); // Slower light-up interval for less load
+        setInterval(randomLightUp, 400); // Slower light-up interval for less load
     </script>
 
 </body>
